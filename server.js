@@ -9,40 +9,48 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Connect to MongoDB (ONLY ONCE)
-mongoose.connect(process.env.MONGODB_URI)
+// ✅ Connect to MongoDB
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
-// Message Schema
+// ✅ Message Schema
 const messageSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   message: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
-// Model
+// ✅ Model
 const Message = mongoose.model("Message", messageSchema);
 
-// Save Message API
+// ✅ Save Message API
 app.post("/api/messages", async (req, res) => {
   try {
     const newMessage = new Message(req.body);
     await newMessage.save();
-    res.status(201).json({ success: true, message: "Message saved successfully" });
+    res.status(201).json({
+      success: true,
+      message: "Message saved successfully",
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Error saving message",
+    });
   }
 });
 
-// Test route
+// ✅ Test Route (Optional but recommended)
 app.get("/", (req, res) => {
-  res.send("🚀 Server running...");
+  res.send("Server is running 🚀");
 });
 
-// Start Server
+// ✅ IMPORTANT: Port for Render
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
